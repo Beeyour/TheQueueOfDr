@@ -1,36 +1,23 @@
-.PHONY: build up down logs restart clean
+FROM python:3.12-slim
 
-# Build Docker images
-build:
-	docker-compose build
 
-# Start containers in detached mode
-up:
-	docker-compose up -d
+WORKDIR /app
 
-# Stop and remove containers
-down:
-	docker-compose down
 
-# Show logs for both services
-logs:
-	docker-compose logs -f
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# Show logs for backend only
-logs-backend:
-	docker-compose logs -f backend
 
-# Show logs for frontend only
-logs-frontend:
-	docker-compose logs -f frontend
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Restart (down then up)
-restart: down up
 
-# Clean up (remove containers, images, and volumes)
-clean:
-	docker-compose down -v --rmi all
+COPY *.py ./
 
-# Status
-status:
-	docker-compose ps
+
+EXPOSE 8000
+
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
