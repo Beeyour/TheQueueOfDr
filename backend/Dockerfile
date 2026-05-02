@@ -13,7 +13,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy backend source code
-COPY *.py .
+COPY . ./
 
 # Create directory for QR codes
 RUN mkdir -p qr_codes
