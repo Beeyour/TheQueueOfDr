@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: hospital-queue-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///./hospital_queue.db
+    volumes:
+      - ./qr_codes:/app/qr_codes
+    networks:
+      - hospital-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hospital-queue-frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - hospital-network
+    restart: unless-stopped
+
+networks:
+  hospital-network:
+    driver: bridge
