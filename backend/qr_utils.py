@@ -4,7 +4,7 @@ import io
 import qrcode
 
 # FRONTEND_URL is where the QR codes should point (React app)
-FRONTEND_URL = "http://localhost:5173"
+FRONTEND_URL = "http://145.241.108.122"
 QR_DIR = "qr_codes"
 
 
