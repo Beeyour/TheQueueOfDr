@@ -20,11 +20,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://145.241.108.122:8000
     container_name: hospital-queue-frontend
     ports:
       - "80:80"
-    environment:
-      - VITE_API_URL=http://backend:8000
     depends_on:
       - backend
     networks:
