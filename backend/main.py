@@ -33,7 +33,6 @@ Base.metadata.create_all(bind=engine)
 
 # --- Admin Endpoints ---
 
-
 @app.get("/doctors", response_model=list[DoctorResponse])
 def list_doctors(db: Session = Depends(get_db)):
     doctors = db.query(Doctor).all()
@@ -46,6 +45,7 @@ def list_doctors(db: Session = Depends(get_db)):
             clinic_name=doctor.clinic_name,
             current_number=doctor.current_number,
             created_at=doctor.created_at,
+            updated_at=doctor.updated_at,  # تمت الإضافة
             control_url=qr_info["control_url"],
             view_url=qr_info["view_url"],
         ))
@@ -67,6 +67,7 @@ def create_doctor(payload: DoctorCreate, db: Session = Depends(get_db)):
         clinic_name=doctor.clinic_name,
         current_number=doctor.current_number,
         created_at=doctor.created_at,
+        updated_at=doctor.updated_at,  # تمت الإضافة
         control_url=qr_info["control_url"],
         view_url=qr_info["view_url"],
     )
@@ -94,6 +95,7 @@ def update_doctor(doctor_id: str, payload: DoctorUpdate, db: Session = Depends(g
         clinic_name=doctor.clinic_name,
         current_number=doctor.current_number,
         created_at=doctor.created_at,
+        updated_at=doctor.updated_at,  # تمت الإضافة
         control_url=qr_info["control_url"],
         view_url=qr_info["view_url"],
     )
@@ -113,7 +115,6 @@ def delete_doctor(doctor_id: str, db: Session = Depends(get_db)):
 
 # --- Doctor (Control) Endpoints ---
 
-
 @app.post("/dr/{doctor_id}/increment", response_model=CounterResponse)
 def increment_counter(doctor_id: str, db: Session = Depends(get_db)):
     doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
@@ -128,7 +129,11 @@ def increment_counter(doctor_id: str, db: Session = Depends(get_db)):
     db.refresh(doctor)
 
     return CounterResponse(
-        id=doctor.id, name=doctor.name, clinic_name=doctor.clinic_name, current_number=doctor.current_number
+        id=doctor.id, 
+        name=doctor.name, 
+        clinic_name=doctor.clinic_name, 
+        current_number=doctor.current_number,
+        updated_at=doctor.updated_at  # تمت الإضافة
     )
 
 
@@ -146,7 +151,11 @@ def decrement_counter(doctor_id: str, db: Session = Depends(get_db)):
     db.refresh(doctor)
 
     return CounterResponse(
-        id=doctor.id, name=doctor.name, clinic_name=doctor.clinic_name, current_number=doctor.current_number
+        id=doctor.id, 
+        name=doctor.name, 
+        clinic_name=doctor.clinic_name, 
+        current_number=doctor.current_number,
+        updated_at=doctor.updated_at  # تمت الإضافة
     )
 
 
@@ -161,12 +170,15 @@ def reset_counter(doctor_id: str, db: Session = Depends(get_db)):
     db.refresh(doctor)
 
     return CounterResponse(
-        id=doctor.id, name=doctor.name, clinic_name=doctor.clinic_name, current_number=doctor.current_number
+        id=doctor.id, 
+        name=doctor.name, 
+        clinic_name=doctor.clinic_name, 
+        current_number=doctor.current_number,
+        updated_at=doctor.updated_at  # تمت الإضافة
     )
 
 
 # --- Patient (View) Endpoint ---
-
 
 @app.get("/patient/{doctor_id}", response_model=PatientViewResponse)
 def get_current_number(doctor_id: str, db: Session = Depends(get_db)):
@@ -174,11 +186,14 @@ def get_current_number(doctor_id: str, db: Session = Depends(get_db)):
     if not doctor:
         raise HTTPException(status_code=404, detail="Doctor not found")
 
-    return PatientViewResponse(clinic_name=doctor.clinic_name, current_number=doctor.current_number)
+    return PatientViewResponse(
+        clinic_name=doctor.clinic_name, 
+        current_number=doctor.current_number,
+        updated_at=doctor.updated_at  # تمت الإضافة
+    )
 
 
 # --- QR Code Download Endpoints ---
-
 
 @app.get("/qr/control/{doctor_id}")
 def download_control_qr(doctor_id: str):

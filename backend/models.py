@@ -15,3 +15,4 @@ class Doctor(Base):
     clinic_name: Mapped[str] = mapped_column(String(255), nullable=False)
     current_number: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)

@@ -20,6 +20,7 @@ class DoctorResponse(BaseModel):
     clinic_name: str
     current_number: int
     created_at: datetime
+    updated_at: datetime 
     control_url: str
     view_url: str
 
@@ -36,6 +37,7 @@ class CounterResponse(BaseModel):
     name: str
     clinic_name: str
     current_number: int
+    updated_at: datetime 
 
     model_config = {"from_attributes": True}
 
@@ -43,3 +45,4 @@ class CounterResponse(BaseModel):
 class PatientViewResponse(BaseModel):
     clinic_name: str
     current_number: int
+    updated_at: datetime
